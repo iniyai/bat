@@ -14,7 +14,7 @@ type StatCommand struct {
 }
 
 func (sc *StatCommand) Desc() string {
-	return "Integer statistics for sidin integer streams"
+	return "Integer statistics for STDIN integer streams"
 }
 
 func (sc *StatCommand) Init(args []string) error {
