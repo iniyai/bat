@@ -10,11 +10,15 @@ const WelcomeMessage string = "Welcome to BAT (Bash Additional Tools).\n\n" +
 	"Give me one of below commands.\n" +
 	"For more help type bat help <cmd>"
 
-func buildCmds() map[string]Command {
+var enabledCommands = []Command{
+	&StatCommand{},
+	&LinesBetweenCommand{},
+}
+
+func initCommands() map[string]Command {
 	commands := make(map[string]Command)
 
-	for _, cmd := range []Command{&StatCommand{},
-		&LinesBetweenCommand{}} {
+	for _, cmd := range enabledCommands {
 		cmd.Init()
 		commands[cmd.Name()] = cmd
 	}
@@ -25,7 +29,7 @@ func buildCmds() map[string]Command {
 func main() {
 
 	// All commands
-	cmds := buildCmds()
+	cmds := initCommands()
 
 	// If no commands are given show general help.
 	if len(os.Args) < 2 {
