@@ -25,19 +25,19 @@ func (sc *StatCommand) Init(args []string) error {
 
 func (sc *StatCommand) Help(stderr io.Writer) {
 	bOut := bufio.NewWriter(stderr)
-	WriteAndFlush(bOut,"Stat command help")
+	WriteAndFlush(bOut, "Stat command help")
 }
 
 func (sc *StatCommand) Interact(stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
 	bInOut := bufio.NewReadWriter(bufio.NewReader(stdin), bufio.NewWriter(stdout))
 	sum := 0
 	size := 0
-	for  {
+	for {
 		line, err := bInOut.ReadString([]byte(*(sc.delim))[0])
 		if err != nil {
 			break
 		} else {
-			line = line[:len(line) - 1]
+			line = line[:len(line)-1]
 			value, err := strconv.Atoi(line)
 			if err != nil {
 				continue
@@ -46,13 +46,6 @@ func (sc *StatCommand) Interact(stdin io.Reader, stdout io.Writer, stderr io.Wri
 			size++
 		}
 	}
-	WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, avg: %f\n", sum, size, float32(sum) / float32(size)))
+	WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, avg: %f\n", sum, size, float32(sum)/float32(size)))
 	return nil
 }
-
-
-
-
-
-
-

@@ -25,7 +25,7 @@ type Command interface {
 func RunCommand(command Command) chan int {
 	retCodeChannel := make(chan int)
 	go func() {
-		rc :=0
+		rc := 0
 		if command.Interact(os.Stdin, os.Stdout, os.Stderr) != nil {
 			rc = 1
 		}
