@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 )
@@ -19,22 +20,16 @@ type Command interface {
 func RunCommand(command Command) chan int {
 	retCodeChannel := make(chan int)
 	go func() {
-
-		err := command.Init(os.Args)
+		err := command.Interact(os.Stdin, os.Stdout, os.Stderr)
 		if err != nil {
-			retCodeChannel <- 2
+			fmt.Println("Error while interacting: " + err.Error())
+			retCodeChannel <- 1
 		} else {
-			err = command.Interact(os.Stdin, os.Stdout, os.Stderr)
-			if err != nil {
-				retCodeChannel <- 1
-			} else {
-				retCodeChannel <- 0
-			}
+			retCodeChannel <- 0
 		}
 	}()
 	return retCodeChannel
 }
-
 
 // Common utils
 func WriteAndFlush(writer *bufio.Writer, value string) {
