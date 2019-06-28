@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"os"
 )
@@ -22,17 +21,15 @@ type Command interface {
 	Help(stderr io.Writer)
 }
 
-// Utility function to run a command
+// Utility function to run a command with Standard PIPES
 func RunCommand(command Command) chan int {
 	retCodeChannel := make(chan int)
 	go func() {
-		err := command.Interact(os.Stdin, os.Stdout, os.Stderr)
-		if err != nil {
-			fmt.Println("Error while interacting: " + err.Error())
-			retCodeChannel <- 1
-		} else {
-			retCodeChannel <- 0
+		rc :=0
+		if command.Interact(os.Stdin, os.Stdout, os.Stderr) != nil {
+			rc = 1
 		}
+		retCodeChannel <- rc
 	}()
 	return retCodeChannel
 }
