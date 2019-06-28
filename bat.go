@@ -13,13 +13,11 @@ const WelcomeMessage string = "Welcome to BAT (Bash Additional Tools).\n\n" +
 func buildCmds() map[string]Command {
 	commands := make(map[string]Command)
 
-	statCmd := &StatCommand{}
-	statCmd.Init()
-	commands[statCmd.Name()] = statCmd
-
-	lbwCmd := &LinesBetweenCommand{}
-	lbwCmd.Init()
-	commands[lbwCmd.Name()] = lbwCmd
+	for _, cmd := range []Command{&StatCommand{},
+		&LinesBetweenCommand{}} {
+		cmd.Init()
+		commands[cmd.Name()] = cmd
+	}
 
 	return commands
 }
