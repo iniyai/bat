@@ -12,7 +12,15 @@ const WelcomeMessage string = "Welcome to BAT (Bash Additional Tools).\n\n" +
 
 func buildCmds() map[string]Command {
 	commands := make(map[string]Command)
-	commands["stat"] = &StatCommand{}
+
+	statCmd := &StatCommand{}
+	statCmd.Init()
+	commands[statCmd.Name()] = statCmd
+
+	lbwCmd := &LinesBetweenCommand{}
+	lbwCmd.Init()
+	commands[lbwCmd.Name()] = lbwCmd
+
 	return commands
 }
 
@@ -37,13 +45,8 @@ func main() {
 	default:
 		cmd, ok := cmds[cmd_name]
 		if ok {
-			err := cmd.Init(os.Args[2:])
-			if err != nil {
-				fmt.Println("unable to initialize cmd: " + cmd_name + " with args: " + strings.Join(os.Args[2:], ","))
-			} else {
-				os.Exit(<-RunCommand(cmd))
-			}
-			cmd.Help(os.Stderr)
+			cmd.Init()
+			os.Exit(<-RunCommand(cmd, os.Args[2:]))
 		} else {
 			fmt.Println("unknown command: " + cmd_name)
 		}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -10,26 +9,34 @@ import (
 
 // Stat command -  Integer statistics for sidin integer streams
 type StatCommand struct {
-	delim *string
+	delim      *string
+	cmdOptions *flag.FlagSet
+}
+
+func (sc *StatCommand) Name() string {
+	return "stat"
 }
 
 func (sc *StatCommand) Desc() string {
 	return "Integer statistics for STDIN integer streams"
 }
 
-func (sc *StatCommand) Init(args []string) error {
-	flagSet := flag.NewFlagSet("stat", flag.ExitOnError)
-	sc.delim = flagSet.String("delim", "\n", "record delimiter.")
-	return flagSet.Parse(args)
+func (sc *StatCommand) Init() {
+	sc.cmdOptions = flag.NewFlagSet(sc.Name(), flag.ExitOnError)
+	sc.delim = sc.cmdOptions.String("delim", "\n", "record delimiter.")
 }
 
 func (sc *StatCommand) Help(stderr io.Writer) {
-	bOut := bufio.NewWriter(stderr)
-	WriteAndFlush(bOut, "Stat command help")
+	sc.cmdOptions.SetOutput(stderr)
+	sc.cmdOptions.Usage()
 }
 
-func (sc *StatCommand) Interact(stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
-	bInOut := bufio.NewReadWriter(bufio.NewReader(stdin), bufio.NewWriter(stdout))
+func (sc *StatCommand) Interact(args []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) error {
+	if sc.cmdOptions.Parse(args) != nil {
+		return CommandNotInitialized
+	}
+
+	bInOut, _ := ToBuffered(stdin, stdout, stderr)
 	sum := 0
 	size := 0
 	for {
