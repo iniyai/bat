@@ -42,16 +42,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	cmd_name := strings.ToLower(os.Args[1])
+	cmdName := strings.ToLower(os.Args[1])
 	// Handle given command
-	switch cmd_name {
+	switch cmdName {
 
 	default:
-		cmd, ok := cmds[cmd_name]
+		cmd, ok := cmds[cmdName]
 		if ok {
 			os.Exit(<-RunCommand(cmd, os.Args[2:]))
 		} else {
-			fmt.Println("unknown command: " + cmd_name)
+			fmt.Println("unknown command: " + cmdName)
 		}
 		break
 
