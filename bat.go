@@ -10,6 +10,7 @@ const WelcomeMessage string = "Welcome to BAT (Bash Additional Tools).\n\n" +
 	"Give me one of below commands.\n" +
 	"For more help type bat help <cmd>"
 
+// To enable your command, add an entry here.
 var enabledCommands = []Command{
 	&StatCommand{},
 	&LinesBetweenCommand{},
