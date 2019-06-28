@@ -16,6 +16,7 @@ var enabledCommands = []Command{
 	&LinesBetweenCommand{},
 }
 
+// Initialize Enabled commands
 func initCommands() map[string]Command {
 	commands := make(map[string]Command)
 
