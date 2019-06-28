@@ -7,16 +7,22 @@ import (
 	"os"
 )
 
+// General Command interface
 type Command interface {
+	// Single Ling description of this command
 	Desc() string
 
+	// Initialize this command with cmd line arguments
 	Init(args []string) error
 
+	// Interact with STDIN, STDOUT and STDERR
 	Interact(stdin io.Reader, stdout io.Writer, stderr io.Writer) error
 
+	// Print well-descriptive help to STDERR
 	Help(stderr io.Writer)
 }
 
+// Utility function to run a command
 func RunCommand(command Command) chan int {
 	retCodeChannel := make(chan int)
 	go func() {
@@ -31,7 +37,7 @@ func RunCommand(command Command) chan int {
 	return retCodeChannel
 }
 
-// Common utils
+// Common utils -- Start
 func WriteAndFlush(writer *bufio.Writer, value string) {
 	_, err := writer.WriteString(value)
 

@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// Stat command -  Integer statistics for sidin integer streams
 type StatCommand struct {
 	delim *string
 }
