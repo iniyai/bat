@@ -10,6 +10,8 @@ import (
 // Stat command -  Integer statistics for sidin integer streams
 type StatCommand struct {
 	delim      *string
+	floatMode  *bool
+	base       *int
 	cmdOptions *flag.FlagSet
 }
 
@@ -18,12 +20,14 @@ func (sc *StatCommand) Name() string {
 }
 
 func (sc *StatCommand) Desc() string {
-	return "Integer statistics for STDIN integer streams"
+	return "Numerical statistics for STDIN reals"
 }
 
 func (sc *StatCommand) Init() {
 	sc.cmdOptions = flag.NewFlagSet(sc.Name(), flag.ExitOnError)
 	sc.delim = sc.cmdOptions.String("delim", "\n", "record delimiter.")
+	sc.base = sc.cmdOptions.Int("base", 10, "numerical base of input")
+	sc.floatMode = sc.cmdOptions.Bool("float", false, "float mode")
 }
 
 func (sc *StatCommand) Help(stderr io.Writer) {
@@ -37,7 +41,8 @@ func (sc *StatCommand) Interact(args []string, stdin io.Reader, stdout io.Writer
 	}
 
 	bInOut, _ := ToBuffered(stdin, stdout, stderr)
-	sum := 0
+	var sumF float64 = 0.0
+	var sumI int64 = 0
 	size := 0
 	for {
 		line, err := bInOut.ReadString([]byte(*(sc.delim))[0])
@@ -45,14 +50,26 @@ func (sc *StatCommand) Interact(args []string, stdin io.Reader, stdout io.Writer
 			break
 		} else {
 			line = line[:len(line)-1]
-			value, err := strconv.Atoi(line)
-			if err != nil {
-				continue
+			if *sc.floatMode {
+				value, err := strconv.ParseFloat(line, 64)
+				if err != nil {
+					continue
+				}
+				sumF += value
+			} else {
+				value, err := strconv.ParseInt(line, *sc.base, 64)
+				if err != nil {
+					continue
+				}
+				sumI += value
 			}
-			sum += value
 			size++
 		}
 	}
-	WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, avg: %f\n", sum, size, float32(sum)/float32(size)))
+	if *sc.floatMode {
+		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %f, size: %d, avg: %f\n", sumF, size, sumF/float64(size)))
+	} else {
+		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, avg: %f\n", sumI, size, float64(sumI)/float64(size)))
+	}
 	return nil
 }

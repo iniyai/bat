@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"errors"
+	"github.com/fatih/color"
 	"io"
 	"os"
 )
@@ -40,6 +41,13 @@ func RunCommand(command Command, args []string) chan int {
 }
 
 // Common utils -- Start
+
+
+// Output Formatting options -- START
+var BlackBoldFormatter = color.New(color.FgBlack).Add(color.Bold)
+var ItalicFormatter = color.New(color.Italic)
+var BlackBoldUnderLineFormatter = color.New(color.FgBlack).Add(color.Bold).Add(color.Underline)
+// Output Formatting options -- END
 
 func ToBuffered(stdin io.Reader, stdout io.Writer, stderr io.Writer) (*bufio.ReadWriter, *bufio.Writer) {
 	return bufio.NewReadWriter(bufio.NewReader(stdin), bufio.NewWriter(stdout)), bufio.NewWriter(stderr)

@@ -17,7 +17,7 @@ func (*LinesBetweenCommand) Name() string {
 }
 
 func (*LinesBetweenCommand) Desc() string {
-	return "Extracts Lines between given start-index end end-index."
+	return "Extracts Lines between given start-index & end-index."
 }
 
 func (lbw *LinesBetweenCommand) Init() {

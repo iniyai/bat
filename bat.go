@@ -6,7 +6,11 @@ import (
 	"strings"
 )
 
-const WelcomeMessage string = "Welcome to BAT (Bash Additional Tools).\n\n" +
+
+var WelcomeMessage = "Welcome to "+ BlackBoldUnderLineFormatter.Sprint("BAT") +
+	" (" +
+	ItalicFormatter.Sprint("Bash Additional Tools") +
+	").\n\n" +
 	"Give me one of below commands.\n" +
 	"For more help type bat help <cmd>"
 
@@ -14,6 +18,7 @@ const WelcomeMessage string = "Welcome to BAT (Bash Additional Tools).\n\n" +
 var enabledCommands = []Command{
 	&StatCommand{},
 	&LinesBetweenCommand{},
+	&HistogramCommand{},
 }
 
 // Initialize Enabled commands
@@ -36,8 +41,10 @@ func main() {
 	// If no commands are given show general help.
 	if len(os.Args) < 2 {
 		fmt.Println(WelcomeMessage)
+		index := 0
 		for name, c := range cmds {
-			fmt.Println("  " + name + " - " + c.Desc())
+			index++
+			fmt.Printf("  %d) %s - %s\n", index, BlackBoldFormatter.Sprint(name), c.Desc())
 		}
 		os.Exit(1)
 	}
