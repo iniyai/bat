@@ -45,7 +45,6 @@ func main() {
 	default:
 		cmd, ok := cmds[cmd_name]
 		if ok {
-			cmd.Init()
 			os.Exit(<-RunCommand(cmd, os.Args[2:]))
 		} else {
 			fmt.Println("unknown command: " + cmd_name)
