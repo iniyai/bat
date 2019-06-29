@@ -24,7 +24,7 @@ func (HistogramCommand) Name() string {
 }
 
 func (HistogramCommand) Desc() string {
-	return "Prints histogram of input values"
+	return "Prints histogram input stream of positive integers"
 }
 
 func (hc *HistogramCommand) Init() {
