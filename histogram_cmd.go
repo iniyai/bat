@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	tmap "github.com/emirpasic/gods/maps/treemap"
@@ -73,7 +74,7 @@ func (hc *HistogramCommand) Interact(args []string, stdin io.Reader, stdout io.W
 	for score, freq := range fmap {
 		hGram.add(score, freq)
 	}
-	hGram.plot(stdout, *hc.horizontalChart, *hc.maxHeight)
+	hGram.plot(bInOut.Writer, *hc.horizontalChart, *hc.maxHeight)
 	return nil
 }
 
@@ -122,7 +123,7 @@ func (hGram *Histogram) add(score, freq int64) {
 	}
 }
 
-func (hGram *Histogram) plot(writer io.Writer, horizontal bool, height int64) {
+func (hGram *Histogram) plot(writer *bufio.Writer, horizontal bool, height int64) {
 	if horizontal {
 		lastBucket, _ := hGram.bucketMap.Max()
 		horizontalBucketSize1 := int(math.Ceil(math.Log10(float64(lastBucket.(int64)))))
@@ -132,7 +133,8 @@ func (hGram *Histogram) plot(writer io.Writer, horizontal bool, height int64) {
 		hGram.bucketMap.Each(func(key interface{}, value interface{}) {
 			histPercent := float32(value.(int64)) / float32(hGram.totalFreq) * 100
 			histLen := (value.(int64) * height) / hGram.maxFreq
-			fmt.Printf(fmtStr, key, key.(int64)+hGram.span, strings.Repeat("*", int(histLen)), value, histPercent)
+			WriteAndFlush(writer,
+				fmt.Sprintf(fmtStr, key, key.(int64)+hGram.span, strings.Repeat("*", int(histLen)), value, histPercent))
 		})
 	} else {
 		panic("vertical map not yet implemented")
