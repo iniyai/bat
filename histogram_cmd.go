@@ -126,10 +126,10 @@ func (hGram *Histogram) add(score, freq int64) {
 func (hGram *Histogram) plot(writer *bufio.Writer, horizontal bool, height int64) {
 	if horizontal {
 		lastBucket, _ := hGram.bucketMap.Max()
-		horizontalBucketSize1 := int(math.Ceil(math.Log10(float64(lastBucket.(int64)))))
-		horizontalBucketSize2 := int(math.Ceil(math.Log10(float64(lastBucket.(int64) + hGram.span))))
-		fmtStr := fmt.Sprintf("[%%%dd - %%%dd) | %%-%ds | (%%d - %%.2f%%%%)\n", horizontalBucketSize1,
-			horizontalBucketSize2, height)
+		horizontalBucketStartWidth := int(math.Ceil(math.Log10(float64(lastBucket.(int64))))) + 1
+		horizontalBucketEndWidth := int(math.Ceil(math.Log10(float64(lastBucket.(int64)+hGram.span)))) + 1
+		fmtStr := fmt.Sprintf("[%%%dd -%%%dd) | %%-%ds | (%%d - %%.2f%%%%)\n", horizontalBucketStartWidth,
+			horizontalBucketEndWidth, height)
 		hGram.bucketMap.Each(func(key interface{}, value interface{}) {
 			histPercent := float32(value.(int64)) / float32(hGram.totalFreq) * 100
 			histLen := (value.(int64) * height) / hGram.maxFreq
