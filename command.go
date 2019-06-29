@@ -36,4 +36,3 @@ func RunCommand(command Command, args []string) chan int {
 	}()
 	return retCodeChannel
 }
-

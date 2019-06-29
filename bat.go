@@ -6,8 +6,7 @@ import (
 	"strings"
 )
 
-
-var WelcomeMessage = "Welcome to "+ BlackBoldUnderLineFormatter.Sprint("BAT") +
+var WelcomeMessage = "Welcome to " + BlackBoldUnderLineFormatter.Sprint("BAT") +
 	" (" +
 	ItalicFormatter.Sprint("Bash Additional Tools") +
 	").\n\n" +

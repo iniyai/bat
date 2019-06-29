@@ -9,11 +9,11 @@ import (
 
 // Common utils -- Start
 
-
 // Output Formatting options -- Start
 var BlackBoldFormatter = color.New(color.FgBlack).Add(color.Bold)
 var ItalicFormatter = color.New(color.Italic)
 var BlackBoldUnderLineFormatter = color.New(color.FgBlack).Add(color.Bold).Add(color.Underline)
+
 // Output Formatting options -- End
 
 // IOUtils -- Start
@@ -33,12 +33,14 @@ func WriteAndFlush(writer *bufio.Writer, value string) {
 		}
 	}
 }
+
 // IOUtils -- End
 
 // Common Errors -- Start
 var CommandNotInitialized = errors.New("Command not initialized")
 
 var IllegalCommandArguments = errors.New("Illegal Command Arguments")
+
 // Common Errors -- End
 
 // Common utils -- End
