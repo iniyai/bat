@@ -20,7 +20,7 @@ func (sc *StatCommand) Name() string {
 }
 
 func (sc *StatCommand) Desc() string {
-	return "Numerical statistics for STDIN reals"
+	return "Numerical statistics for STDIN reals."
 }
 
 func (sc *StatCommand) Init() {

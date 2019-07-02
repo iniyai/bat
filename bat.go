@@ -18,6 +18,7 @@ var enabledCommands = []Command{
 	&StatCommand{},
 	&LinesBetweenCommand{},
 	&HistogramCommand{},
+	&LineLengthCommand{},
 }
 
 // Initialize Enabled commands
