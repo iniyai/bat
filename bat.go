@@ -19,6 +19,7 @@ var enabledCommands = []Command{
 	&LinesBetweenCommand{},
 	&HistogramCommand{},
 	&LineLengthCommand{},
+	&EnvironmentCommand{},
 }
 
 // Initialize Enabled commands
