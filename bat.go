@@ -27,6 +27,9 @@ func initCommands() map[string]Command {
 	commands := make(map[string]Command)
 
 	for _, cmd := range enabledCommands {
+		if commands[cmd.Name()] != nil {
+			panic("duplicate commands with name:" + cmd.Name())
+		}
 		cmd.Init()
 		commands[cmd.Name()] = cmd
 	}
