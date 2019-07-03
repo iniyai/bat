@@ -69,10 +69,10 @@ func (sc *StatCommand) Interact(args []string, stdin io.Reader, stdout io.Writer
 		}
 	}
 
-	if *sc.floatMode {
+	if *sc.floatMode && rStats.count() > 0 {
 		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %f, size: %d, avg: %f, min: %f, max: %f\n", rStats.sum(),
 			rStats.count(), rStats.mean(), rStats.min(), rStats.max()))
-	} else {
+	} else if iStats.count() > 0 {
 		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, avg: %f, min: %d, max: %d\n", iStats.sum(),
 			iStats.count(), iStats.mean(), iStats.min(), iStats.max()))
 	}
