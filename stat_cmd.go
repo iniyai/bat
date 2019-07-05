@@ -71,11 +71,11 @@ func (sc *StatCommand) Interact(args []string, stdin io.Reader, stdout io.Writer
 	}
 
 	if *sc.floatMode && rStats.count() > 0 {
-		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %f, size: %d, avg: %f, min: %f, max: %f\n", rStats.sum(),
-			rStats.count(), rStats.mean(), rStats.min(), rStats.max()))
+		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %f, size: %d, mean: %f, min: %f, max: %f, mode: %f\n", rStats.sum(),
+			rStats.count(), rStats.mean(), rStats.min(), rStats.max(), rStats.mode()))
 	} else if iStats.count() > 0 {
-		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, avg: %f, min: %d, max: %d\n", iStats.sum(),
-			iStats.count(), iStats.mean(), iStats.min(), iStats.max()))
+		WriteAndFlush(bInOut.Writer, fmt.Sprintf("sum: %d, size: %d, mean: %f, min: %d, max: %d, mode: %d\n", iStats.sum(),
+			iStats.count(), iStats.mean(), iStats.min(), iStats.max(), iStats.mode()))
 	}
 	return nil
 }
@@ -117,9 +117,9 @@ func (is *intStats) update(values ...interface{}) {
 		is.countE++
 		oldValue, ok := is.tmap.Get(value.(int64))
 		if ok {
-			is.tmap.Put(value.(int64), oldValue.(int64)+int64(1))
+			is.tmap.Put(value.(int64), oldValue.(uint64)+uint64(1))
 		} else {
-			is.tmap.Put(value.(int64), int64(1))
+			is.tmap.Put(value.(int64), uint64(1))
 		}
 	}
 }
@@ -163,7 +163,7 @@ func (is *intStats) mode() interface{} {
 		return math.NaN()
 	}
 
-	return extractModeFromFreqencyMap(is.tmap, is.countE)
+	return extractModeFromFreqencyMap(is.tmap)
 }
 
 func (is *intStats) mean() float64 {
@@ -203,9 +203,9 @@ func (rs *realStats) update(values ...interface{}) {
 		rs.countE++
 		oldValue, ok := rs.tmap.Get(value.(float64))
 		if ok {
-			rs.tmap.Put(value.(float64), oldValue.(float64)+float64(1))
+			rs.tmap.Put(value.(float64), oldValue.(uint64)+uint64(1))
 		} else {
-			rs.tmap.Put(value.(float64), float64(1))
+			rs.tmap.Put(value.(float64), uint64(1))
 		}
 	}
 }
@@ -249,7 +249,7 @@ func (rs *realStats) mode() interface{} {
 		return math.NaN()
 	}
 
-	return extractModeFromFreqencyMap(rs.tmap, rs.countE)
+	return extractModeFromFreqencyMap(rs.tmap)
 }
 
 func (rs *realStats) mean() float64 {
@@ -274,10 +274,25 @@ func (rs *realStats) count() uint64 {
 
 // Common util methods
 func extractMedianFromFreqencyMap(tmap *treemap.Map, totalCount uint64) interface{} {
-	//var mi1, mi2 int64 = int64(totalCount) / 2, -1
+	medianIndex := uint64(totalCount) / 2
+	for _, ele := range tmap.Keys() {
+		freq, _ := tmap.Get(ele)
+		if medianIndex <= freq.(uint64) {
+			return ele
+		}
+		medianIndex -= freq.(uint64)
+	}
 	return nil
 }
 
-func extractModeFromFreqencyMap(tmap *treemap.Map, totalCount uint64) interface{} {
-	return nil
+func extractModeFromFreqencyMap(tmap *treemap.Map) interface{} {
+	var modeEle interface{} = nil
+	var maxFreq uint64 = 0
+	tmap.Each(func(key interface{}, value interface{}) {
+		if maxFreq < value.(uint64) {
+			maxFreq = value.(uint64)
+			modeEle = key
+		}
+	})
+	return modeEle
 }
