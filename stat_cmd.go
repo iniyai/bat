@@ -6,6 +6,7 @@ import (
 	"github.com/emirpasic/gods/maps/treemap"
 	"github.com/emirpasic/gods/utils"
 	"io"
+	"math"
 	"strconv"
 )
 
@@ -124,32 +125,60 @@ func (is *intStats) update(values ...interface{}) {
 }
 
 func (is *intStats) min() interface{} {
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
 	value, _ := is.tmap.Min()
 	return value.(int64)
 }
 
 func (is *intStats) max() interface{} {
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
 	value, _ := is.tmap.Max()
 	return value.(int64)
 }
 
 func (is *intStats) sum() interface{} {
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
 	return is.sumE
 }
 
 func (is *intStats) median() interface{} {
-	return 0
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
+	return extractMedianFromFreqencyMap(is.tmap, is.countE)
 }
 
 func (is *intStats) mode() interface{} {
-	panic("implement me")
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
+	return extractModeFromFreqencyMap(is.tmap, is.countE)
 }
 
 func (is *intStats) mean() float64 {
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
 	return float64(is.sumE) / float64(is.countE)
 }
 
 func (is *intStats) stddev() float64 {
+	if is.countE == 0 {
+		return math.NaN()
+	}
+
 	panic("implement me")
 }
 
@@ -182,35 +211,73 @@ func (rs *realStats) update(values ...interface{}) {
 }
 
 func (rs *realStats) min() interface{} {
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
 	value, _ := rs.tmap.Min()
 	return value.(float64)
 }
 
 func (rs *realStats) max() interface{} {
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
 	value, _ := rs.tmap.Max()
 	return value.(float64)
 }
 
 func (rs *realStats) sum() interface{} {
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
 	return rs.sumE
 }
 
 func (rs *realStats) median() interface{} {
-	return 0
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
+	return extractMedianFromFreqencyMap(rs.tmap, rs.countE)
 }
 
 func (rs *realStats) mode() interface{} {
-	panic("implement me")
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
+	return extractModeFromFreqencyMap(rs.tmap, rs.countE)
 }
 
 func (rs *realStats) mean() float64 {
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
 	return rs.sumE / float64(rs.countE)
 }
 
 func (rs *realStats) stddev() float64 {
+	if rs.countE == 0 {
+		return math.NaN()
+	}
+
 	panic("implement me")
 }
 
 func (rs *realStats) count() uint64 {
 	return rs.countE
+}
+
+// Common util methods
+func extractMedianFromFreqencyMap(tmap *treemap.Map, totalCount uint64) interface{} {
+	//var mi1, mi2 int64 = int64(totalCount) / 2, -1
+	return nil
+}
+
+func extractModeFromFreqencyMap(tmap *treemap.Map, totalCount uint64) interface{} {
+	return nil
 }
